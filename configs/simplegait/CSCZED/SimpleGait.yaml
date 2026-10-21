@@ -1,6 +1,6 @@
 data_cfg:
   dataset_name: CSCZED
-  dataset_root: /path/to/CSCZED/pars-ps
+  dataset_root: /path/to/CSCZED/pars-gps
   dataset_partition: /path/to/OpenGait/datasets/CSCZED/CSCZED.json
   num_workers: 1
 
