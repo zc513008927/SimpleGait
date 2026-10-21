@@ -1,0 +1,165 @@
+data_cfg:
+  dataset_name: CSCZED
+  dataset_root: /path/to/CSCZED/pars-ps
+  dataset_partition: /path/to/OpenGait/datasets/CSCZED/CSCZED.json
+  num_workers: 1
+
+  remove_no_gallery: false
+  test_dataset_name: CSCZED
+
+
+evaluator_cfg:
+  enable_float16: true
+  restore_ckpt_strict: true
+  restore_hint: 0
+
+  # Keep this consistent with the selected fusion_type.
+  # Examples:
+  #   SimpleGait_LPF
+  #   SimpleGait_LPF_SE
+  #   SimpleGait_LPF_ECA
+  #   SimpleGait_CAT
+  #   SimpleGait_PLUS
+  #   SimpleGait_ATTENTION
+  save_name: SimpleGait_LPF
+
+  eval_func: evaluate_indoor_dataset
+
+  sampler:
+    batch_shuffle: false
+    batch_size: 8
+    sample_type: all_ordered
+    frames_all_limit: 720
+
+  metric: euc
+
+  transform:
+    - type: BaseSilCuttingTransform
+
+
+loss_cfg:
+  - loss_term_weight: 1.0
+    margin: 0.2
+    type: TripletLoss
+    log_prefix: triplet
+
+  - loss_term_weight: 1.0
+    scale: 16
+    type: CrossEntropyLoss
+    log_prefix: softmax
+    log_accuracy: true
+
+
+model_cfg:
+  model: SimpleGait
+
+  # Fusion variants:
+  #
+  #   lpf
+  #       Pure lightweight projection fusion.
+  #
+  #   lpf_se
+  #       LPF with SE applied to the concatenated feature before
+  #       the final 1x1 projection.
+  #
+  #   lpf_eca
+  #       LPF with ECA applied to the concatenated feature before
+  #       the final 1x1 projection.
+  #
+  #   cat
+  #       Direct concatenation followed by 1x1 projection.
+  #
+  #   plus
+  #       Element-wise addition.
+  #
+  #   attention
+  #       Learned modality attention fusion.
+  #
+  fusion_type: lpf
+
+  Backbone:
+    in_channels: 2
+
+    blocks:
+      - 1
+      - 1
+      - 1
+      - 1
+
+    C: 2
+
+  SeparateBNNecks:
+    class_num: 250
+    in_channels: 256
+    parts_num: 16
+
+  SeparateFCs:
+    in_channels: 512
+    out_channels: 256
+    parts_num: 16
+
+
+optimizer_cfg:
+  lr: 0.1
+  momentum: 0.9
+  solver: SGD
+  weight_decay: 0.0005
+
+
+scheduler_cfg:
+  gamma: 0.1
+
+  milestones:
+    - 10000
+    - 15000
+    - 20000
+
+  scheduler: MultiStepLR
+
+
+trainer_cfg:
+  enable_float16: true
+  fix_BN: false
+  with_test: false
+
+  log_iter: 100
+
+  restore_ckpt_strict: true
+  restore_hint: 0
+
+  save_iter: 2000
+
+  # Keep this consistent with evaluator_cfg.save_name
+  # and the selected fusion_type.
+  save_name: SimpleGait_LPF
+
+  sync_BN: true
+  total_iter: 22000
+
+  sampler:
+    batch_shuffle: true
+
+    batch_size:
+      - 8
+      - 16
+
+    frames_num_fixed: 30
+    frames_skip_num: 4
+
+    sample_type: fixed_ordered
+    type: TripletSampler
+
+  transform:
+    - type: Compose
+
+      trf_cfg:
+        - type: RandomPerspective
+          prob: 0.2
+
+        - type: BaseSilCuttingTransform
+
+        - type: RandomHorizontalFlip
+          prob: 0.2
+
+        - type: RandomRotate
+          prob: 0.2
