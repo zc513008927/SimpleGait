@@ -18,14 +18,14 @@ def single_view_gallery_evaluation(feature, label, seq_type, view, dataset, metr
                                   'CL': ['H-scene2-cl-1', 'H-scene2-cl-2', 'L-scene2-cl-1', 'L-scene2-cl-2', 'H-scene3-cl-1', 'H-scene3-cl-2', 'L-scene3-cl-1', 'L-scene3-cl-2', 'H-scene3_s-cl-1', 'H-scene3_s-cl-2', 'L-scene3_s-cl-1', 'L-scene3_s-cl-2']
                                   },
                       'SUSTech1K': {'Normal': ['01-nm'], 'Bag': ['bg'], 'Clothing': ['cl'], 'Carrying':['cr'], 'Umberalla': ['ub'], 'Uniform': ['uf'], 'Occlusion': ['oc'],'Night': ['nt'], 'Overall': ['01','02','03','04']},
-                      'CDUTZED-LN': {'NM': ['NM-traj_3_1','NM-traj_1_1','NM-traj_4_1'],
+                      'CSCZED': {'NM': ['NM-traj_3_1','NM-traj_1_1','NM-traj_4_1'],
                                   'BP':['BP-traj_1_1','BP-traj_2_1','BP-traj_3_1','BP-traj_4_1'],
                                   'LCL':['LCL-traj_1_1','BP-traj_2_1','LCL-traj_3_1','LCL-traj_4_1'],
                                   'MCL': ['MCL-traj_1_1','MCL-traj_1_1', 'MCL-traj_3_1','MCL-traj_4_1'],
                                   'HCL': ['HCL-traj_1_1', 'HCL-traj_1_1', 'HCL-traj_3_1', 'HCL-traj_4_1'],
                                   'TBP': ['TBP-traj_1_1', 'TBP-traj_2_1', 'TBP-traj_3_1', 'TBP-traj_4_1'],
                                    'TP': ['TP-traj_1_1', 'TP-traj_2_1', 'TP-traj_3_1', 'TP-traj_4_1'],
-                                   'DE': ['DE-traj_1_1', 'DE-traj_2_1', 'DE-traj_3_1', 'DE-traj_4_1'],
+                                   'DK': ['DE-traj_1_1', 'DE-traj_2_1', 'DE-traj_3_1', 'DE-traj_4_1'],
                                    'scenario_1': [
                                                'LCL-traj_1_1', 'BP-traj_2_1', 'LCL-traj_3_1', 'LCL-traj_4_1',
                                                'MCL-traj_1_1', 'MCL-traj_1_1', 'MCL-traj_3_1', 'MCL-traj_4_1',
@@ -44,7 +44,7 @@ def single_view_gallery_evaluation(feature, label, seq_type, view, dataset, metr
                         'OUMVLP': ['01'],
                         'CASIA-E': ['H-scene1-nm-1', 'H-scene1-nm-2', 'L-scene1-nm-1', 'L-scene1-nm-2'],
                         'SUSTech1K': ['00-nm'],
-                        'CDUTZED-LN': ['NM-traj_2_1']}
+                        'CSCZED': ['NM-traj_2_1']}
     msg_mgr = get_msg_mgr()
     acc = {}
     view_list = sorted(np.unique(view))
@@ -91,6 +91,7 @@ def single_view_gallery_evaluation(feature, label, seq_type, view, dataset, metr
             out_str += f"{type_}@R{rank+1}: {np.mean(sub_acc):.2f}%\t"
         msg_mgr.log_info(out_str)
     return result_dict
+    
 def de_diag(acc, each_angle=False):
     # Exclude identical-view cases
     dividend = acc.shape[1] - 1.
