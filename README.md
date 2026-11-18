@@ -1,8 +1,6 @@
 # SimpleGait
 
-<p align="center">
-  <img src="assets/pipeline.png" alt="SimpleGait framework" width="800" />
-</p>
+
 
 This repository provides the code and supporting resources for **SimpleGait**, a lightweight multimodal framework for gait recognition under clothing variation and modality degradation.
 
